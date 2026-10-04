@@ -41,6 +41,7 @@ export default function Index({
     auth,
 }: PageProps<ProjectsIndexProps>) {
     const canManage = auth.role === 'Администратор' || auth.role === 'Менеджер';
+    const canViewFinance = auth.role !== 'Прораб';
     const form = useForm<ProjectForm>({
         name: '',
         address: '',
@@ -67,13 +68,13 @@ export default function Index({
         <AuthenticatedLayout title="Объекты" eyebrow="Проекты ремонта">
             <Head title="Объекты" />
 
-            <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
+            <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
                 <Panel
                     title="Реестр объектов"
                     action={
                         <select
                             defaultValue={filters.status ?? ''}
-                            className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                            className="w-full rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700 sm:w-auto"
                             onChange={(event) =>
                                 router.get(
                                     route('projects.index'),
@@ -98,14 +99,14 @@ export default function Index({
                         />
                     ) : (
                         <>
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full text-left text-sm">
+                            <div className="max-w-full overflow-x-auto">
+                                <table className="min-w-[760px] text-left text-sm">
                                     <thead className="text-xs font-semibold uppercase text-stone-500">
                                         <tr>
                                             <th className="py-2 pr-4">Объект</th>
                                             <th className="py-2 pr-4">Клиент</th>
                                             <th className="py-2 pr-4">Команда</th>
-                                            <th className="py-2 pr-4">Бюджет</th>
+                                            {canViewFinance && <th className="py-2 pr-4">Бюджет</th>}
                                             <th className="py-2 pr-4">Статус</th>
                                             <th className="py-2 pr-4">Финиш</th>
                                         </tr>
@@ -133,9 +134,11 @@ export default function Index({
                                                         {project.foreman?.name ?? 'Без прораба'}
                                                     </div>
                                                 </td>
-                                                <td className="py-3 pr-4 tabular-nums text-stone-700">
-                                                    {money(project.budget)}
-                                                </td>
+                                                {canViewFinance && (
+                                                    <td className="py-3 pr-4 tabular-nums text-stone-700">
+                                                        {money(project.budget)}
+                                                    </td>
+                                                )}
                                                 <td className="py-3 pr-4">
                                                     <StatusBadge status={project.status} />
                                                 </td>
@@ -174,7 +177,7 @@ export default function Index({
                                         onChange={(event) =>
                                             form.setData(field as keyof ProjectForm, event.target.value)
                                         }
-                                        className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                        className="w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
                                     />
                                 </label>
                             ))}
@@ -183,7 +186,7 @@ export default function Index({
                                 <select
                                     value={form.data.customer_id}
                                     onChange={(event) => form.setData('customer_id', event.target.value)}
-                                    className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                    className="w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
                                 >
                                     {customers.map((customer) => (
                                         <option key={customer.id} value={customer.id}>
@@ -197,7 +200,7 @@ export default function Index({
                                 <select
                                     value={form.data.foreman_id}
                                     onChange={(event) => form.setData('foreman_id', event.target.value)}
-                                    className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                    className="w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
                                 >
                                     <option value="">Не назначен</option>
                                     {foremen.map((foreman) => (
@@ -212,7 +215,7 @@ export default function Index({
                                 <select
                                     value={form.data.status}
                                     onChange={(event) => form.setData('status', event.target.value)}
-                                    className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                    className="w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
                                 >
                                     {statuses.map((status) => (
                                         <option key={status} value={status}>

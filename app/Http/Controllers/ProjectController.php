@@ -15,6 +15,7 @@ class ProjectController extends Controller
 {
     public function index(Request $request): Response
     {
+        $canViewFinance = ! $request->user()->hasRole('Прораб');
         $projects = Project::query()
             ->visibleTo($request->user())
             ->with(['customer', 'manager', 'foreman'])
@@ -22,6 +23,10 @@ class ProjectController extends Controller
             ->latest()
             ->paginate(12)
             ->withQueryString();
+
+        if (! $canViewFinance) {
+            $projects->getCollection()->each->makeHidden('budget');
+        }
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
@@ -57,9 +62,12 @@ class ProjectController extends Controller
 
     public function show(Request $request, Project $project): Response
     {
-        abort_unless($project->newQuery()->whereKey($project->id)->visibleTo($request->user())->exists(), 403);
+        $user = $request->user();
+        $canViewFinance = ! $user->hasRole('Прораб');
 
-        $project->load([
+        abort_unless($project->newQuery()->whereKey($project->id)->visibleTo($user)->exists(), 403);
+
+        $relations = [
             'customer',
             'manager',
             'foreman',
@@ -68,11 +76,18 @@ class ProjectController extends Controller
             'tasks.assignee',
             'events',
             'files.uploader',
-            'payments',
-            'acts',
             'comments.author',
             'activities.user',
-        ]);
+        ];
+
+        if ($canViewFinance) {
+            $relations[] = 'payments';
+            $relations[] = 'acts';
+        } else {
+            $project->makeHidden('budget');
+        }
+
+        $project->load($relations);
 
         return Inertia::render('Projects/Show', [
             'project' => $project,

@@ -30,4 +30,24 @@ class LeadRequest extends FormRequest
             'comment' => ['nullable', 'string', 'max:2000'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'client_name.required' => 'Укажите имя клиента.',
+            'phone.required' => 'Укажите телефон клиента.',
+            'email.email' => 'Введите корректный email.',
+            'renovation_type.required' => 'Укажите тип ремонта.',
+            'address.required' => 'Укажите адрес или район.',
+            'area.numeric' => 'Площадь должна быть числом.',
+            'area.min' => 'Площадь должна быть больше нуля.',
+            'budget.integer' => 'Бюджет должен быть целым числом.',
+            'budget.min' => 'Бюджет не может быть отрицательным.',
+            'desired_start_date.date' => 'Укажите корректную дату старта.',
+            'status.required' => 'Выберите статус заявки.',
+            'status.in' => 'Выберите статус из списка.',
+            'manager_id.exists' => 'Выберите менеджера из списка.',
+            'comment.max' => 'Комментарий не должен быть длиннее 2000 символов.',
+        ];
+    }
 }

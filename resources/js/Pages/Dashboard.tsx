@@ -19,7 +19,7 @@ interface DashboardProps {
         readonly activeLeads: number;
         readonly activeProjects: number;
         readonly todayTasks: number;
-        readonly pendingPayments: number;
+        readonly pendingPayments: number | null;
     };
     readonly projects: Project[];
     readonly tasks: RenovationTask[];
@@ -35,6 +35,8 @@ export default function Dashboard({
     events,
     activity,
 }: PageProps<DashboardProps>) {
+    const canViewFinance = stats.pendingPayments !== null;
+
     return (
         <AuthenticatedLayout
             title="Обзор"
@@ -42,18 +44,20 @@ export default function Dashboard({
         >
             <Head title="Обзор" />
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            <div className={`grid gap-4 md:grid-cols-2 ${canViewFinance ? 'xl:grid-cols-5' : 'xl:grid-cols-4'}`}>
                 <StatCard label="Новые заявки" value={stats.newLeads} />
                 <StatCard label="Заявки в работе" value={stats.activeLeads} />
                 <StatCard label="Активные объекты" value={stats.activeProjects} />
                 <StatCard label="Задачи сегодня" value={stats.todayTasks} />
-                <StatCard
-                    label="Ожидаемые платежи"
-                    value={money(stats.pendingPayments)}
-                />
+                {canViewFinance && (
+                    <StatCard
+                        label="Ожидаемые платежи"
+                        value={money(stats.pendingPayments)}
+                    />
+                )}
             </div>
 
-            <div className="mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+            <div className="mt-6 grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
                 <Panel title={role === 'Клиент' ? 'Мой объект' : 'Активные объекты'}>
                     <div className="grid gap-3">
                         {projects.map((project) => (
@@ -76,7 +80,7 @@ export default function Dashboard({
                                 <div className="mt-3 grid gap-2 text-sm text-stone-600 sm:grid-cols-3">
                                     <span>{project.customer?.name}</span>
                                     <span>{project.foreman?.name ?? 'Прораб не назначен'}</span>
-                                    <span>{money(project.budget)}</span>
+                                    {canViewFinance && <span>{money(project.budget)}</span>}
                                 </div>
                             </Link>
                         ))}
@@ -112,10 +116,10 @@ export default function Dashboard({
                 </Panel>
             </div>
 
-            <div className="mt-6 grid gap-6 xl:grid-cols-2">
+            <div className="mt-6 grid min-w-0 gap-6 xl:grid-cols-2">
                 <Panel title="Задачи">
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full text-left text-sm">
+                    <div className="max-w-full overflow-x-auto">
+                        <table className="min-w-[520px] text-left text-sm">
                             <thead className="text-xs font-semibold uppercase text-stone-500">
                                 <tr>
                                     <th className="py-2 pr-4">Задача</th>

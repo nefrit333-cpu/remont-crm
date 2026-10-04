@@ -14,10 +14,10 @@ export default function Panel({
 }: PropsWithChildren<PanelProps>) {
     return (
         <section
-            className={`rounded-lg border border-stone-200/80 bg-white/90 shadow-[0_18px_60px_rgba(45,38,28,0.08)] ${className}`}
+            className={`min-w-0 rounded-lg border border-stone-200/80 bg-white/90 shadow-[0_18px_60px_rgba(45,38,28,0.08)] ${className}`}
         >
             {(title || action) && (
-                <div className="flex flex-col gap-3 border-b border-stone-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 flex-col gap-3 border-b border-stone-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                     {title && (
                         <h2 className="text-base font-semibold text-stone-950">
                             {title}
@@ -26,7 +26,7 @@ export default function Panel({
                     {action}
                 </div>
             )}
-            <div className="p-5">{children}</div>
+            <div className="min-w-0 p-5">{children}</div>
         </section>
     );
 }

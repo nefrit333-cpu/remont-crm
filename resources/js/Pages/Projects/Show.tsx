@@ -35,6 +35,7 @@ export default function Show({
     auth,
 }: PageProps<ProjectShowProps>) {
     const canManage = auth.role === 'Администратор' || auth.role === 'Менеджер';
+    const canViewFinance = auth.role !== 'Прораб';
     const form = useForm<ProjectEditForm>({
         name: project.name,
         address: project.address,
@@ -77,7 +78,7 @@ export default function Show({
         >
             <Head title={project.name} />
 
-            <div className="grid gap-6 xl:grid-cols-[1fr_380px]">
+            <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
                 <Panel title="Параметры объекта">
                     {canManage ? (
                         <form onSubmit={update} className="grid gap-4 md:grid-cols-2">
@@ -161,7 +162,7 @@ export default function Show({
                             <Info label="Адрес" value={project.address} />
                             <Info label="Тип ремонта" value={project.renovation_type} />
                             <Info label="Площадь" value={project.area ? `${project.area} м2` : 'Не указана'} />
-                            <Info label="Бюджет" value={money(project.budget)} />
+                            {canViewFinance && <Info label="Бюджет" value={money(project.budget)} />}
                             <Info label="Старт" value={date(project.start_date)} />
                             <Info label="Финиш" value={date(project.planned_finish_date)} />
                         </dl>
@@ -178,7 +179,7 @@ export default function Show({
                             <Info label="Клиент" value={project.customer?.name ?? 'Не указан'} />
                             <Info label="Менеджер" value={project.manager?.name ?? 'Не назначен'} />
                             <Info label="Прораб" value={project.foreman?.name ?? 'Не назначен'} />
-                            <Info label="Бюджет" value={money(project.budget)} />
+                            {canViewFinance && <Info label="Бюджет" value={money(project.budget)} />}
                         </dl>
                     </Panel>
 
@@ -212,7 +213,7 @@ export default function Show({
                 </div>
             </div>
 
-            <div className="mt-6 grid gap-6 xl:grid-cols-2">
+            <div className="mt-6 grid min-w-0 gap-6 xl:grid-cols-2">
                 <Panel title="Этапы">
                     <div className="space-y-3">
                         {project.stages?.map((stage) => (
@@ -257,23 +258,25 @@ export default function Show({
                     </div>
                 </Panel>
 
-                <Panel title="Финансы">
-                    <div className="space-y-3">
-                        {project.payments?.map((payment) => (
-                            <div key={payment.id} className="flex items-center justify-between gap-4 rounded-md border border-stone-200 bg-stone-50 p-3 text-sm">
-                                <div>
-                                    <div className="font-semibold text-stone-900">{payment.purpose}</div>
-                                    <div className="mt-1 text-xs text-stone-500">до {date(payment.due_date)}</div>
+                {canViewFinance && (
+                    <Panel title="Финансы">
+                        <div className="space-y-3">
+                            {project.payments?.map((payment) => (
+                                <div key={payment.id} className="flex items-center justify-between gap-4 rounded-md border border-stone-200 bg-stone-50 p-3 text-sm">
+                                    <div>
+                                        <div className="font-semibold text-stone-900">{payment.purpose}</div>
+                                        <div className="mt-1 text-xs text-stone-500">до {date(payment.due_date)}</div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="font-semibold tabular-nums">{money(payment.amount)}</div>
+                                        <div className="mt-1"><StatusBadge status={payment.status} /></div>
+                                    </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="font-semibold tabular-nums">{money(payment.amount)}</div>
-                                    <div className="mt-1"><StatusBadge status={payment.status} /></div>
-                                </div>
-                            </div>
-                        ))}
-                        {project.payments?.length === 0 && <EmptyState title="Платежи ещё не добавлены" />}
-                    </div>
-                </Panel>
+                            ))}
+                            {project.payments?.length === 0 && <EmptyState title="Платежи ещё не добавлены" />}
+                        </div>
+                    </Panel>
+                )}
 
                 <Panel title="Комментарии и история">
                     <div className="space-y-3">

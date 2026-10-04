@@ -38,6 +38,8 @@ class SectionController extends Controller
 
     public function payments(Request $request): Response
     {
+        abort_if($request->user()->hasRole('Прораб'), 403);
+
         return Inertia::render('Sections/Payments', [
             'payments' => Payment::query()->visibleTo($request->user())->with('project.customer')->orderByRaw('due_date is null, due_date asc')->paginate(18),
         ]);
@@ -45,6 +47,8 @@ class SectionController extends Controller
 
     public function acts(Request $request): Response
     {
+        abort_if($request->user()->hasRole('Прораб'), 403);
+
         return Inertia::render('Sections/Acts', [
             'acts' => Act::query()->visibleTo($request->user())->with('project.customer')->latest()->paginate(18),
         ]);

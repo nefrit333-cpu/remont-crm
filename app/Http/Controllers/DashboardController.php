@@ -20,23 +20,29 @@ class DashboardController extends Controller
 
         $projects = Project::query()->visibleTo($user);
         $tasks = RenovationTask::query()->visibleTo($user);
+        $canViewFinance = ! $user->hasRole('Прораб');
 
         $stats = [
             'newLeads' => $user->hasRole('Клиент') ? 0 : Lead::query()->visibleTo($user)->where('status', 'Новая')->count(),
             'activeLeads' => $user->hasRole('Клиент') ? 0 : Lead::query()->visibleTo($user)->whereNotIn('status', ['Завершена', 'Отказ'])->count(),
             'activeProjects' => (clone $projects)->whereNotIn('status', ['Завершён', 'Архив'])->count(),
             'todayTasks' => (clone $tasks)->whereDate('due_date', today())->count(),
-            'pendingPayments' => Payment::query()->visibleTo($user)->where('status', 'Ожидается')->sum('amount'),
+            'pendingPayments' => $canViewFinance ? Payment::query()->visibleTo($user)->where('status', 'Ожидается')->sum('amount') : null,
         ];
+        $dashboardProjects = (clone $projects)
+            ->with(['customer', 'foreman', 'manager'])
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        if (! $canViewFinance) {
+            $dashboardProjects->each->makeHidden('budget');
+        }
 
         return Inertia::render('Dashboard', [
             'role' => $user->roles()->value('name'),
             'stats' => $stats,
-            'projects' => (clone $projects)
-                ->with(['customer', 'foreman', 'manager'])
-                ->latest()
-                ->limit(5)
-                ->get(),
+            'projects' => $dashboardProjects,
             'tasks' => (clone $tasks)
                 ->with(['project', 'assignee'])
                 ->orderByRaw('due_date is null, due_date asc')

@@ -1,6 +1,7 @@
 import Pagination from '@/Components/Pagination';
 import Panel from '@/Components/Panel';
 import StatusBadge from '@/Components/StatusBadge';
+import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { date, money } from '@/lib/format';
 import { Lead, PageProps, Pagination as PaginationType, User } from '@/types';
@@ -31,6 +32,25 @@ type LeadForm = {
     manager_id: string;
     comment: string;
 };
+
+type LeadField = keyof LeadForm;
+
+const leadFields: Array<{
+    readonly field: LeadField;
+    readonly label: string;
+    readonly type?: string;
+    readonly required?: boolean;
+}> = [
+    { field: 'client_name', label: 'Имя клиента', required: true },
+    { field: 'phone', label: 'Телефон', required: true },
+    { field: 'email', label: 'Email' },
+    { field: 'renovation_type', label: 'Тип ремонта', required: true },
+    { field: 'address', label: 'Адрес или район', required: true },
+    { field: 'area', label: 'Площадь' },
+    { field: 'budget', label: 'Бюджет' },
+    { field: 'desired_start_date', label: 'Желаемый старт', type: 'date' },
+    { field: 'source', label: 'Источник' },
+];
 
 export default function Index({
     leads,
@@ -65,15 +85,15 @@ export default function Index({
         <AuthenticatedLayout title="Заявки" eyebrow="Воронка продаж">
             <Head title="Заявки" />
 
-            <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
+            <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
                 <Panel
                     title="Список заявок"
                     action={
-                        <div className="flex flex-col gap-2 sm:flex-row">
+                        <div className="flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row">
                             <input
                                 defaultValue={filters.search ?? ''}
                                 placeholder="Поиск"
-                                className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                className="w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700 sm:w-auto"
                                 onKeyDown={(event) => {
                                     if (event.key === 'Enter') {
                                         router.get(route('leads.index'), {
@@ -85,7 +105,7 @@ export default function Index({
                             />
                             <select
                                 defaultValue={filters.status ?? ''}
-                                className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                className="w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700 sm:w-auto"
                                 onChange={(event) =>
                                     router.get(route('leads.index'), {
                                         ...filters,
@@ -103,8 +123,8 @@ export default function Index({
                         </div>
                     }
                 >
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full text-left text-sm">
+                    <div className="max-w-full overflow-x-auto">
+                        <table className="min-w-[700px] text-left text-sm">
                             <thead className="text-xs font-semibold uppercase text-stone-500">
                                 <tr>
                                     <th className="py-2 pr-4">Клиент</th>
@@ -155,39 +175,45 @@ export default function Index({
 
                 <Panel title="Новая заявка">
                     <form onSubmit={submit} className="grid gap-4">
-                        {[
-                            ['client_name', 'Имя клиента'],
-                            ['phone', 'Телефон'],
-                            ['email', 'Email'],
-                            ['renovation_type', 'Тип ремонта'],
-                            ['address', 'Адрес или район'],
-                            ['area', 'Площадь'],
-                            ['budget', 'Бюджет'],
-                            ['desired_start_date', 'Желаемый старт'],
-                            ['source', 'Источник'],
-                        ].map(([field, label]) => (
-                            <label key={field} className="grid gap-1 text-sm">
-                                <span className="font-medium text-stone-700">
+                        {leadFields.map(({ field, label, type = 'text', required }) => {
+                            const inputId = `lead-${field}`;
+                            const errorId = `${inputId}-error`;
+                            const error = form.errors[field];
+
+                            return (
+                                <label key={field} htmlFor={inputId} className="grid gap-1 text-sm">
+                                    <span className="font-medium text-stone-700">
                                     {label}
-                                </span>
-                                <input
-                                    type={field === 'desired_start_date' ? 'date' : 'text'}
-                                    value={form.data[field as keyof LeadForm]}
-                                    onChange={(event) =>
-                                        form.setData(field as keyof LeadForm, event.target.value)
-                                    }
-                                    className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
-                                />
-                            </label>
-                        ))}
-                        <label className="grid gap-1 text-sm">
+                                        {required && <span className="text-rose-700"> *</span>}
+                                    </span>
+                                    <input
+                                        id={inputId}
+                                        type={type}
+                                        value={form.data[field]}
+                                        onChange={(event) =>
+                                            form.setData(field, event.target.value)
+                                        }
+                                        aria-invalid={error ? 'true' : undefined}
+                                        aria-describedby={error ? errorId : undefined}
+                                        aria-required={required ? 'true' : undefined}
+                                        className="w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                    />
+                                    <InputError id={errorId} message={error} className="mt-1" />
+                                </label>
+                            );
+                        })}
+                        <label htmlFor="lead-status" className="grid gap-1 text-sm">
                             <span className="font-medium text-stone-700">
                                 Статус
                             </span>
                             <select
+                                id="lead-status"
                                 value={form.data.status}
                                 onChange={(event) => form.setData('status', event.target.value)}
-                                className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                aria-invalid={form.errors.status ? 'true' : undefined}
+                                aria-describedby={form.errors.status ? 'lead-status-error' : undefined}
+                                aria-required="true"
+                                className="w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
                             >
                                 {statuses.map((status) => (
                                     <option key={status} value={status}>
@@ -195,15 +221,19 @@ export default function Index({
                                     </option>
                                 ))}
                             </select>
+                            <InputError id="lead-status-error" message={form.errors.status} className="mt-1" />
                         </label>
-                        <label className="grid gap-1 text-sm">
+                        <label htmlFor="lead-manager_id" className="grid gap-1 text-sm">
                             <span className="font-medium text-stone-700">
                                 Менеджер
                             </span>
                             <select
+                                id="lead-manager_id"
                                 value={form.data.manager_id}
                                 onChange={(event) => form.setData('manager_id', event.target.value)}
-                                className="rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                aria-invalid={form.errors.manager_id ? 'true' : undefined}
+                                aria-describedby={form.errors.manager_id ? 'lead-manager_id-error' : undefined}
+                                className="w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
                             >
                                 <option value="">Не назначен</option>
                                 {managers.map((manager) => (
@@ -212,16 +242,21 @@ export default function Index({
                                     </option>
                                 ))}
                             </select>
+                            <InputError id="lead-manager_id-error" message={form.errors.manager_id} className="mt-1" />
                         </label>
-                        <label className="grid gap-1 text-sm">
+                        <label htmlFor="lead-comment" className="grid gap-1 text-sm">
                             <span className="font-medium text-stone-700">
                                 Комментарий
                             </span>
                             <textarea
+                                id="lead-comment"
                                 value={form.data.comment}
                                 onChange={(event) => form.setData('comment', event.target.value)}
-                                className="min-h-24 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
+                                aria-invalid={form.errors.comment ? 'true' : undefined}
+                                aria-describedby={form.errors.comment ? 'lead-comment-error' : undefined}
+                                className="min-h-24 w-full min-w-0 rounded-md border-stone-300 text-sm focus:border-emerald-700 focus:ring-emerald-700"
                             />
+                            <InputError id="lead-comment-error" message={form.errors.comment} className="mt-1" />
                         </label>
                         <button
                             type="submit"
