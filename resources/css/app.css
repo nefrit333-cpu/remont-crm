@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+@source '../js/**/*.tsx';
+
+@theme {
+    --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@layer base {
+    :root {
+        color-scheme: light;
+    }
+
+    body {
+        @apply bg-[#f4f0e8] text-stone-950 antialiased;
+    }
+
+    ::selection {
+        @apply bg-emerald-900 text-white;
+    }
+}
+
+@layer components {
+    .focus-ring {
+        @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f0e8];
+    }
+}
