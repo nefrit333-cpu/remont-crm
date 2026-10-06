@@ -5,6 +5,12 @@ interface PaginationProps {
     readonly links: PaginationLink[];
 }
 
+const formatPaginationLabel = (label: string) =>
+    label
+        .replaceAll('&laquo;', '‹')
+        .replaceAll('&raquo;', '›')
+        .replaceAll('&amp;', '&');
+
 export default function Pagination({ links }: PaginationProps) {
     if (links.length <= 3) {
         return null;
@@ -22,14 +28,16 @@ export default function Pagination({ links }: PaginationProps) {
                                 ? 'border-stone-950 bg-stone-950 text-white'
                                 : 'border-stone-200 bg-white text-stone-700 hover:border-stone-400'
                         }`}
-                        dangerouslySetInnerHTML={{ __html: link.label }}
-                    />
+                    >
+                        {formatPaginationLabel(link.label)}
+                    </Link>
                 ) : (
                     <span
                         key={`${link.label}-${index}`}
                         className="rounded-md border border-stone-100 bg-stone-50 px-3 py-1.5 text-sm text-stone-400"
-                        dangerouslySetInnerHTML={{ __html: link.label }}
-                    />
+                    >
+                        {formatPaginationLabel(link.label)}
+                    </span>
                 ),
             )}
         </nav>
