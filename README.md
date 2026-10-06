@@ -74,6 +74,23 @@ powershell -ExecutionPolicy Bypass -File scripts/check-local.ps1 -WithOnlineAudi
 
 UI дополнительно проверялся в браузере: demo-вход администратора, dashboard, список объектов, карточка объекта и мобильная ширина 390 px.
 
+## Проверка Composer audit
+
+Для быстрой проверки доступности advisory API и состояния `composer audit` есть read-only скрипт:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/check-composer-audit.ps1
+```
+
+Скрипт ничего не обновляет: он не запускает `composer update`, не меняет `composer.json` и `composer.lock`, не пишет в `vendor`.
+
+Exit codes:
+
+- `0` — advisory API доступен, `composer audit` чистый; можно готовить public release отдельным шагом.
+- `1` — advisory API доступен, `composer audit` нашёл advisories; нужно переходить к точечному обновлению зависимостей.
+- `2` — advisory API недоступен или timeout; нужно повторить позже и ничего не менять.
+- `3` — ошибка локального окружения, например не найден PHP или Composer.
+
 ## Запуск через Sail
 
 Sail/MySQL оставлен как опциональный путь для окружений, где доступен Docker.
