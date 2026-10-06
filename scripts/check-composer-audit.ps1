@@ -15,6 +15,59 @@ $apiStatus = 'unavailable'
 $auditStatus = 'not-run'
 $auditExitCode = $null
 $auditOutput = ''
+$auditAttempt = 'normal'
+
+function Get-AuditStatus {
+    param(
+        [int] $ExitCode,
+        [string] $Output
+    )
+
+    if ($ExitCode -eq 0) {
+        return 'clean'
+    }
+
+    if ($Output -match 'curl error 28|timed out|timeout|Connection timed out') {
+        return 'timeout'
+    }
+
+    if ($Output -match 'Found \d+ security vulnerability advisories|Found \d+ security vulnerability advisory') {
+        return 'advisories'
+    }
+
+    return 'error'
+}
+
+function Invoke-ComposerAudit {
+    param(
+        [string] $IpResolve
+    )
+
+    $processStartInfo = [System.Diagnostics.ProcessStartInfo]::new()
+    $processStartInfo.FileName = $php
+    $processStartInfo.Arguments = "`"$composer`" audit --no-interaction"
+    $processStartInfo.WorkingDirectory = $root.Path
+    $processStartInfo.RedirectStandardOutput = $true
+    $processStartInfo.RedirectStandardError = $true
+    $processStartInfo.UseShellExecute = $false
+    $processStartInfo.CreateNoWindow = $true
+
+    if ($IpResolve) {
+        $processStartInfo.Environment['COMPOSER_IPRESOLVE'] = $IpResolve
+    }
+
+    $process = [System.Diagnostics.Process]::new()
+    $process.StartInfo = $processStartInfo
+    [void] $process.Start()
+    $standardOutput = $process.StandardOutput.ReadToEnd()
+    $standardError = $process.StandardError.ReadToEnd()
+    $process.WaitForExit()
+
+    return [pscustomobject]@{
+        ExitCode = $process.ExitCode
+        Output = (($standardOutput, $standardError) -join [Environment]::NewLine).Trim()
+    }
+}
 
 try {
     $php = Resolve-PhpExecutable
@@ -44,33 +97,24 @@ try {
 }
 
 if ($apiAvailable) {
-    $processStartInfo = [System.Diagnostics.ProcessStartInfo]::new()
-    $processStartInfo.FileName = $php
-    $processStartInfo.Arguments = "`"$composer`" audit --no-interaction"
-    $processStartInfo.WorkingDirectory = $root.Path
-    $processStartInfo.RedirectStandardOutput = $true
-    $processStartInfo.RedirectStandardError = $true
-    $processStartInfo.UseShellExecute = $false
-    $processStartInfo.CreateNoWindow = $true
+    $normalAudit = Invoke-ComposerAudit
+    $auditExitCode = $normalAudit.ExitCode
+    $auditOutput = $normalAudit.Output
+    $auditStatus = Get-AuditStatus -ExitCode $auditExitCode -Output $auditOutput
 
-    $process = [System.Diagnostics.Process]::new()
-    $process.StartInfo = $processStartInfo
-    [void] $process.Start()
-    $standardOutput = $process.StandardOutput.ReadToEnd()
-    $standardError = $process.StandardError.ReadToEnd()
-    $process.WaitForExit()
+    if ($auditStatus -eq 'timeout') {
+        $ipv4Audit = Invoke-ComposerAudit -IpResolve '4'
+        $ipv4Status = Get-AuditStatus -ExitCode $ipv4Audit.ExitCode -Output $ipv4Audit.Output
 
-    $auditExitCode = $process.ExitCode
-    $auditOutput = (($standardOutput, $standardError) -join [Environment]::NewLine).Trim()
-
-    if ($auditExitCode -eq 0) {
-        $auditStatus = 'clean'
-    } elseif ($auditOutput -match 'curl error 28|timed out|timeout|Connection timed out') {
-        $auditStatus = 'timeout'
-    } elseif ($auditOutput -match 'Found \d+ security vulnerability advisories|Found \d+ security vulnerability advisory') {
-        $auditStatus = 'advisories'
-    } else {
-        $auditStatus = 'error'
+        if ($ipv4Status -ne 'timeout') {
+            $auditAttempt = 'ipv4'
+            $auditExitCode = $ipv4Audit.ExitCode
+            $auditOutput = $ipv4Audit.Output
+            $auditStatus = $ipv4Status
+        } else {
+            $auditAttempt = 'normal+ipv4-timeout'
+            $auditOutput = (($auditOutput, '--- IPv4 retry output ---', $ipv4Audit.Output) -join [Environment]::NewLine).Trim()
+        }
     }
 } else {
     $auditStatus = 'timeout'
@@ -83,6 +127,7 @@ if ($apiAvailable -and $auditStatus -eq 'timeout') {
 Write-Host 'Composer audit monitor'
 Write-Host "advisory API: $apiStatus"
 Write-Host "composer audit: $auditStatus"
+Write-Host "audit attempt: $auditAttempt"
 
 switch ($auditStatus) {
     'clean' {
