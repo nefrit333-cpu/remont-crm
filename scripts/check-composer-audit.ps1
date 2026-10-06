@@ -47,6 +47,7 @@ if ($apiAvailable) {
     $processStartInfo = [System.Diagnostics.ProcessStartInfo]::new()
     $processStartInfo.FileName = $php
     $processStartInfo.Arguments = "`"$composer`" audit --no-interaction"
+    $processStartInfo.WorkingDirectory = $root.Path
     $processStartInfo.RedirectStandardOutput = $true
     $processStartInfo.RedirectStandardError = $true
     $processStartInfo.UseShellExecute = $false
