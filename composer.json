@@ -128,12 +128,6 @@
         }
     },{
         "type": "path",
-        "url": "packages/symfony/yaml",
-        "options": {
-            "symlink": false
-        }
-    },{
-        "type": "path",
         "url": "packages/spatie/laravel-package-tools",
         "options": {
             "symlink": false

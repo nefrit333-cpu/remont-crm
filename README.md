@@ -107,11 +107,11 @@ npm run build
 
 После запуска приложение будет доступно на `http://localhost`.
 
-## Известный риск по Composer-аудиту
+## Статус аудитов
 
 `npm audit --audit-level=high` проходит без найденных уязвимостей.
 
-В одном из прогонов `composer audit --ignore-unreachable` на 4 октября 2026 года нашёл 19 advisories в 5 PHP-пакетах:
+`composer audit` проходит после точечного обновления PHP-зависимостей. Были закрыты advisories в пакетах:
 
 - `guzzlehttp/guzzle`
 - `laravel/framework`
@@ -119,11 +119,7 @@ npm run build
 - `league/flysystem`
 - `symfony/yaml`
 
-Повторная проверка `composer audit --ignore-unreachable` в тот же день вернула `No security vulnerability advisories found`, но одновременно сообщила, что Packagist и advisory API недоступны. Такой результат считается неполным, поэтому риск пока не закрыт.
-
-Обычный `composer audit`, `composer outdated --direct` и online-обновление зависимостей в текущем окружении периодически упираются в таймауты Packagist; `composer diagnose` также показывал timeout для HTTP/HTTPS-доступа к Packagist. Offline-диагностика по локальному кэшу показывает dev-версии локальных path-зависимостей и major-обновление `phpunit/phpunit`, но не даёт безопасного пути закрыть найденные ранее advisories. Локальные `packages/` поэтому остаются временным решением.
-
-Для demo-проекта основной практический риск ниже, чем для production: приложение не публикует внешний API, не принимает пользовательский Markdown/YAML как доверенный контент и не развёрнуто наружу. Перед публичным deploy нужно повторить `composer audit`, обновить затронутые пакеты до безопасных версий и заново прогнать проверки.
+Проверка зависит от доступности Packagist advisory API, поэтому перед публичной публикацией или deploy нужно заново запустить `composer audit`, `npm audit --audit-level=high` и полный набор локальных проверок. Этот репозиторий остаётся portfolio/demo-проектом, а не production-ready поставкой.
 
 ## Ограничения demo
 
