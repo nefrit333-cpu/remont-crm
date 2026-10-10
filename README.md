@@ -107,6 +107,18 @@ npm run build
 
 После запуска приложение будет доступно на `http://localhost`.
 
+## Demo deploy на Railway
+
+GitHub Pages для проекта не подходит, потому что это fullstack Laravel-приложение.
+Для публичной portfolio/demo-ссылки подготовлена инструкция Railway deploy:
+
+```text
+docs/deploy-railway.md
+```
+
+Deploy рассчитан на Railway + PostgreSQL. Секреты задаются только в Railway Dashboard.
+Seed demo-данных вынесен в отдельную ручную команду и не запускается автоматически при каждом deploy.
+
 ## Статус аудитов
 
 `npm audit --audit-level=high` проходит без найденных уязвимостей.
