@@ -104,12 +104,6 @@
         }
     },{
         "type": "path",
-        "url": "packages/inertiajs/inertia-laravel-2x",
-        "options": {
-            "symlink": false
-        }
-    },{
-        "type": "path",
         "url": "packages/laravel/sanctum",
         "options": {
             "symlink": false

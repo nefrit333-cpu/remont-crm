@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "05e487692a7e48fb0e099355c73996cb",
+    "content-hash": "3699031aee11f83a8592f4012a924ad3",
     "packages": [
         {
             "name": "brick/math",
@@ -1060,11 +1060,17 @@
         },
         {
             "name": "inertiajs/inertia-laravel",
-            "version": "2.0.99",
+            "version": "v2.0.28",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/inertiajs/inertia-laravel.git",
+                "reference": "ca0d670779dc61437026e9ec7fd3b50c99625ac2"
+            },
             "dist": {
-                "type": "path",
-                "url": "packages/inertiajs/inertia-laravel-2x",
-                "reference": "67666f22924515f44173dfa8bd4a608580519999"
+                "type": "zip",
+                "url": "https://api.github.com/repos/inertiajs/inertia-laravel/zipball/ca0d670779dc61437026e9ec7fd3b50c99625ac2",
+                "reference": "ca0d670779dc61437026e9ec7fd3b50c99625ac2",
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
@@ -1095,29 +1101,14 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Inertia\\": "src"
-                },
                 "files": [
                     "./helpers.php"
-                ]
-            },
-            "autoload-dev": {
+                ],
                 "psr-4": {
-                    "Inertia\\Tests\\": "tests/"
+                    "Inertia\\": "src"
                 }
             },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ],
-                "lint": [
-                    "pint"
-                ],
-                "analyze": [
-                    "phpstan analyze --memory-limit=256M"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1133,10 +1124,11 @@
                 "inertia",
                 "laravel"
             ],
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/inertiajs/inertia-laravel/issues",
+                "source": "https://github.com/inertiajs/inertia-laravel/tree/v2.0.28"
+            },
+            "time": "2026-09-25T09:18:50+00:00"
         },
         {
             "name": "laravel/breeze",
