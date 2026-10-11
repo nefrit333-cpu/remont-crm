@@ -63,6 +63,10 @@ BROADCAST_CONNECTION=log
 MAIL_MAILER=log
 ```
 
+Redis для demo-окружения не нужен. Не добавляй в Railway переменные `REDIS_CLIENT`, `REDIS_HOST`, `REDIS_URL`, `REDIS_PASSWORD` и `REDIS_PORT`: при наличии Redis-переменных Railpack может попытаться установить PHP extension `redis`, хотя проект использует `CACHE_STORE=database` и `QUEUE_CONNECTION=database`.
+
+Для PostgreSQL достаточно `DB_CONNECTION=pgsql` и переменных `DB_*` из блока выше. Если в Railway вручную задана переменная `RAILPACK_PHP_EXTENSIONS`, она не должна содержать `redis`; для этого demo её лучше оставить пустой/не заданной, либо указать только дополнительное расширение `pdo_pgsql`.
+
 Если Railway создаёт переменную `DATABASE_URL`, можно использовать её вместо отдельных `DB_*`, но для читаемости demo-проекта лучше оставить явные переменные выше.
 
 ## Первый запуск demo-данных
@@ -91,6 +95,7 @@ Demo-аккаунты:
 2. Подключить GitHub repo `nefrit333-cpu/remont-crm`.
 3. Добавить PostgreSQL service.
 4. В service variables добавить переменные из раздела выше.
+   Если Railway предложил переменные из старого `.env.example`, удалить Redis-переменные `REDIS_CLIENT`, `REDIS_HOST`, `REDIS_URL`, `REDIS_PASSWORD` и `REDIS_PORT`.
 5. Указать pre-deploy command: `bash railway/deploy.sh`.
 6. Убедиться, что start command задан автоматически; если нет, указать команду из раздела «Что Railway должен запустить».
 7. В Networking нажать `Generate Domain`.
