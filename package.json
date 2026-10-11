@@ -23,5 +23,8 @@
         "tailwindcss": "^4.3.3",
         "typescript": "^5.0.2",
         "vite": "^8.0.0"
+    },
+    "dependencies": {
+        "ziggy-js": "^2.6.5"
     }
 }
