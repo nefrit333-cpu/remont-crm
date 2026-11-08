@@ -98,12 +98,6 @@
         }
     },{
         "type": "path",
-        "url": "packages/laravel/sanctum",
-        "options": {
-            "symlink": false
-        }
-    },{
-        "type": "path",
         "url": "packages/tightenco/ziggy",
         "options": {
             "symlink": false
