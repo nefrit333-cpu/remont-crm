@@ -13,7 +13,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "spatie/laravel-package-tools": "dev-main as 1.99.0",
-        "spatie/laravel-permission": "dev-main",
+        "spatie/laravel-permission": "^8.5",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
@@ -93,12 +93,6 @@
     "repositories": [{
         "type": "path",
         "url": "packages/laravel/breeze",
-        "options": {
-            "symlink": false
-        }
-    },{
-        "type": "path",
-        "url": "packages/spatie/laravel-permission",
         "options": {
             "symlink": false
         }
