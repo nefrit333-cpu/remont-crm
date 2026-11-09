@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2713393943881ecd4008fae6a017ff50",
+    "content-hash": "5f9e70864cee89887ce9c9209f61070b",
     "packages": [
         {
             "name": "brick/math",
@@ -1129,63 +1129,6 @@
                 "source": "https://github.com/inertiajs/inertia-laravel/tree/v2.0.28"
             },
             "time": "2026-09-25T09:18:50+00:00"
-        },
-        {
-            "name": "laravel/breeze",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "packages/laravel/breeze",
-                "reference": "f8b8ef80f8cfd09c98bd99e7183b88359979f346"
-            },
-            "require": {
-                "illuminate/console": "^11.0|^12.0|^13.0",
-                "illuminate/filesystem": "^11.0|^12.0|^13.0",
-                "illuminate/support": "^11.0|^12.0|^13.0",
-                "illuminate/validation": "^11.0|^12.0|^13.0",
-                "php": "^8.2.0",
-                "symfony/console": "^7.0|^8.0"
-            },
-            "require-dev": {
-                "laravel/framework": "^11.0|^12.0|^13.0",
-                "orchestra/testbench-core": "^9.0|^10.0|^11.0",
-                "phpstan/phpstan": "^2.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Laravel\\Breeze\\BreezeServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laravel\\Breeze\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "Minimal Laravel authentication scaffolding with Blade and Tailwind.",
-            "keywords": [
-                "auth",
-                "laravel"
-            ],
-            "support": {
-                "issues": "https://github.com/laravel/breeze/issues",
-                "source": "https://github.com/laravel/breeze"
-            },
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
         },
         {
             "name": "laravel/framework",
@@ -3462,11 +3405,17 @@
         },
         {
             "name": "spatie/laravel-package-tools",
-            "version": "dev-main",
+            "version": "1.93.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-package-tools.git",
+                "reference": "7aeef26bd8d4909bec744dbf47aee7d1395588c1"
+            },
             "dist": {
-                "type": "path",
-                "url": "packages/spatie/laravel-package-tools",
-                "reference": "68297a24013b3d75dcd5f76328a43de5af93560f"
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/7aeef26bd8d4909bec744dbf47aee7d1395588c1",
+                "reference": "7aeef26bd8d4909bec744dbf47aee7d1395588c1",
+                "shasum": ""
             },
             "require": {
                 "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
@@ -3486,22 +3435,7 @@
                     "Spatie\\LaravelPackageTools\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Spatie\\LaravelPackageTools\\Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "php -d auto_prepend_file=tests/Prepend.php vendor/bin/pest --colors=always"
-                ],
-                "test-coverage": [
-                    "@test --coverage"
-                ],
-                "test-dirty": [
-                    "@test --dirty --compact"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -3518,10 +3452,17 @@
                 "laravel-package-tools",
                 "spatie"
             ],
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/spatie/laravel-package-tools/issues",
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.93.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-09-28T07:16:50+00:00"
         },
         {
             "name": "spatie/laravel-permission",
@@ -6173,11 +6114,17 @@
         },
         {
             "name": "tightenco/ziggy",
-            "version": "2.0.99",
+            "version": "v2.6.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tighten/ziggy.git",
+                "reference": "d250c158c75bb10d33e6ebc9b67d65872593ae1a"
+            },
             "dist": {
-                "type": "path",
-                "url": "packages/tightenco/ziggy",
-                "reference": "6981c4735cc5e709b4e176d757e9a6965cd3d4e1"
+                "type": "zip",
+                "url": "https://api.github.com/repos/tighten/ziggy/zipball/d250c158c75bb10d33e6ebc9b67d65872593ae1a",
+                "reference": "d250c158c75bb10d33e6ebc9b67d65872593ae1a",
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
@@ -6203,11 +6150,7 @@
                     "Tighten\\Ziggy\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Tests\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -6228,15 +6171,16 @@
             "description": "Use your Laravel named routes in JavaScript.",
             "homepage": "https://github.com/tighten/ziggy",
             "keywords": [
+                "Ziggy",
                 "javascript",
                 "laravel",
-                "routes",
-                "ziggy"
+                "routes"
             ],
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/tighten/ziggy/issues",
+                "source": "https://github.com/tighten/ziggy/tree/v2.6.5"
+            },
+            "time": "2026-10-10T22:16:55+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -6701,6 +6645,67 @@
             "time": "2026-04-29T18:32:34+00:00"
         },
         {
+            "name": "laravel/breeze",
+            "version": "v2.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/breeze.git",
+                "reference": "4f20e7b2cc8d25daa85d8647241a89c8e0930305"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/breeze/zipball/4f20e7b2cc8d25daa85d8647241a89c8e0930305",
+                "reference": "4f20e7b2cc8d25daa85d8647241a89c8e0930305",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^11.0|^12.0|^13.0",
+                "illuminate/filesystem": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "illuminate/validation": "^11.0|^12.0|^13.0",
+                "php": "^8.2.0",
+                "symfony/console": "^7.0|^8.0"
+            },
+            "require-dev": {
+                "laravel/framework": "^11.0|^12.0|^13.0",
+                "orchestra/testbench-core": "^9.0|^10.0|^11.0",
+                "phpstan/phpstan": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Breeze\\BreezeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Breeze\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Minimal Laravel authentication scaffolding with Blade and Tailwind.",
+            "keywords": [
+                "auth",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/breeze/issues",
+                "source": "https://github.com/laravel/breeze"
+            },
+            "time": "2026-05-14T16:54:25+00:00"
+        },
+        {
             "name": "laravel/pail",
             "version": "v1.2.7",
             "source": {
@@ -6935,11 +6940,17 @@
         },
         {
             "name": "laravel/sail",
-            "version": "1.99.0",
+            "version": "v1.69.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/sail.git",
+                "reference": "3587ac9d68e8f2eaf36bd9fb003a4555861dca9d"
+            },
             "dist": {
-                "type": "path",
-                "url": "packages/laravel/sail",
-                "reference": "603f570a1b190b14ec9b39026894f3a0ce16359e"
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/3587ac9d68e8f2eaf36bd9fb003a4555861dca9d",
+                "reference": "3587ac9d68e8f2eaf36bd9fb003a4555861dca9d",
+                "shasum": ""
             },
             "require": {
                 "illuminate/console": "^9.52.16|^10.0|^11.0|^12.0|^13.0",
@@ -6969,6 +6980,7 @@
                     "Laravel\\Sail\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -6987,10 +6999,7 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
+            "time": "2026-10-08T20:06:52+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -8872,19 +8881,9 @@
             "time": "2025-12-08T11:19:18+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "spatie/laravel-package-tools",
-            "version": "dev-main",
-            "alias": "1.99.0",
-            "alias_normalized": "1.99.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "laravel/breeze": 20,
-        "spatie/laravel-package-tools": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
