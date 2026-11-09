@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        if (getenv('RAILWAY_PUBLIC_DOMAIN')) {
+            $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_PROTO);
+        }
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
