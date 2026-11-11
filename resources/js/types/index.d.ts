@@ -156,6 +156,7 @@ export interface Pagination<T> {
 }
 
 export type PageProps<T extends object = Record<string, unknown>> = T & {
+    publicDemo: boolean;
     auth: {
         user: User;
         role?: string | null;

@@ -20,6 +20,15 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
 
+    public function isPublicDemoAccount(): bool
+    {
+        $expectedRole = config('demo.accounts')[$this->email] ?? null;
+
+        return $expectedRole !== null
+            && $this->roles->count() === 1
+            && $this->hasRole($expectedRole, 'web');
+    }
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);

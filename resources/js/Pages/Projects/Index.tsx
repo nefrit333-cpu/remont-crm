@@ -39,8 +39,9 @@ export default function Index({
     foremen,
     customers,
     auth,
+    publicDemo,
 }: PageProps<ProjectsIndexProps>) {
-    const canManage = auth.role === 'Администратор' || auth.role === 'Менеджер';
+    const canManage = !publicDemo && (auth.role === 'Администратор' || auth.role === 'Менеджер');
     const canViewFinance = auth.role !== 'Прораб';
     const form = useForm<ProjectForm>({
         name: '',
@@ -68,7 +69,7 @@ export default function Index({
         <AuthenticatedLayout title="Объекты" eyebrow="Проекты ремонта">
             <Head title="Объекты" />
 
-            <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
+            <div className={`grid min-w-0 gap-6 ${canManage ? 'xl:grid-cols-[minmax(0,1fr)_420px]' : ''}`}>
                 <Panel
                     title="Реестр объектов"
                     action={

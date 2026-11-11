@@ -61,6 +61,7 @@ FILESYSTEM_DISK=local
 
 BROADCAST_CONNECTION=log
 MAIL_MAILER=log
+PUBLIC_DEMO_MODE=true
 ```
 
 Redis для demo-окружения не нужен. Не добавляй в Railway переменные `REDIS_CLIENT`, `REDIS_HOST`, `REDIS_URL`, `REDIS_PASSWORD` и `REDIS_PORT`: при наличии Redis-переменных Railpack может попытаться установить PHP extension `redis`, хотя проект использует `CACHE_STORE=database` и `QUEUE_CONNECTION=database`.
@@ -71,6 +72,24 @@ Redis для demo-окружения не нужен. Не добавляй в R
 
 ## Первый запуск demo-данных
 
+При первой выкладке защиты существующей демоверсии держите `PUBLIC_DEMO_MODE=true`, пока новая версия не заменит старую на всех экземплярах и не завершатся запросы, принятые старой версией. Старый демовход создавал сессии без метки. Если их хранилище выделено для этой CRM, отзовите все прежние сессии после замены экземпляров. Это завершит и обычные сессии CRM.
+
+Сначала в SSH-терминале Laravel-сервиса проверьте активный драйвер, таблицу и подключение:
+
+```bash
+php artisan tinker --execute='dump(config("session.driver"), config("session.table"), config("session.connection") ?? config("database.default"));'
+```
+
+Если проверка подтвердила драйвер `database` и отдельную таблицу сессий CRM, выполните одноразовый отзыв после отдельного согласования:
+
+```bash
+php artisan tinker --execute='if (!config("demo.enabled") || config("session.driver") !== "database" || config("session.table") !== "sessions") { throw new RuntimeException("Unexpected demo or session configuration"); } dump(["revoked" => \Illuminate\Support\Facades\DB::connection(config("session.connection"))->table("sessions")->delete()]);'
+```
+
+Команда удаляет только строки таблицы `sessions` из подключения, используемого Laravel для сессий. Затем проверьте, что старая сессия требует повторного входа, и заново проверьте четыре демовхода. До подтверждения отзыва держите режим включённым.
+
+Переменная `PUBLIC_DEMO_MODE=true` из блока выше включает публичный просмотр вымышленных данных. Примените настройку новым деплоем, чтобы обновился кеш конфигурации. Вход доступен с главной страницы только четырём демо-аккаунтам с ожидаемыми ролями. Просмотр ограничен правами роли. Сервер блокирует обычный вход, изменения CRM и профиля, смену и сброс пароля. Выход из сессии доступен.
+
 Demo-аккаунты создаёт `DatabaseSeeder`. Seed не запускается автоматически при каждом deploy, чтобы случайно не стереть данные.
 После первого успешного deploy можно один раз вручную пересоздать demo-базу в Railway shell или one-off command:
 
@@ -80,7 +99,7 @@ CONFIRM_REFRESH_DEMO=remont-crm-demo bash railway/refresh-demo.sh
 
 Команда пересоздаёт базу и заполняет её вымышленными demo-данными. Использовать её только для portfolio/demo окружения.
 
-Demo-аккаунты:
+Демо-аккаунты. Пароль в таблице относится к обычному локальному входу после запуска сидера. На Railway с включённым публичным режимом используйте кнопки на главной.
 
 | Роль | Email | Пароль |
 | --- | --- | --- |

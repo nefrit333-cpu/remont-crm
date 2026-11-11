@@ -31,6 +31,7 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            'publicDemo' => (bool) config('demo.enabled'),
             'auth' => [
                 'user' => $request->user()?->loadMissing('roles'),
                 'role' => $request->user()?->roles()->value('name'),

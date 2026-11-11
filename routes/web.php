@@ -21,7 +21,7 @@ Route::get('/', function () {
 });
 
 Route::post('/demo-login', DemoLoginController::class)
-    ->middleware('guest')
+    ->middleware(['guest', 'throttle:12,1'])
     ->name('demo.login');
 
 Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');

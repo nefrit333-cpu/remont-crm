@@ -33,8 +33,9 @@ export default function Show({
     foremen,
     managers,
     auth,
+    publicDemo,
 }: PageProps<ProjectShowProps>) {
-    const canManage = auth.role === 'Администратор' || auth.role === 'Менеджер';
+    const canManage = !publicDemo && (auth.role === 'Администратор' || auth.role === 'Менеджер');
     const canViewFinance = auth.role !== 'Прораб';
     const form = useForm<ProjectEditForm>({
         name: project.name,
@@ -183,7 +184,7 @@ export default function Show({
                         </dl>
                     </Panel>
 
-                    <Panel title="Комментарий">
+                    {!publicDemo && <Panel title="Комментарий">
                         <form onSubmit={addComment} className="grid gap-3">
                             <textarea
                                 value={comment.data.body}
@@ -209,7 +210,7 @@ export default function Show({
                                 Добавить
                             </button>
                         </form>
-                    </Panel>
+                    </Panel>}
                 </div>
             </div>
 

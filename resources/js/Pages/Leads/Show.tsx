@@ -27,7 +27,7 @@ type LeadEditForm = {
     comment: string;
 };
 
-export default function Show({ lead, statuses, managers }: PageProps<LeadShowProps>) {
+export default function Show({ lead, statuses, managers, publicDemo }: PageProps<LeadShowProps>) {
     const form = useForm<LeadEditForm>({
         client_name: lead.client_name,
         phone: lead.phone,
@@ -63,14 +63,14 @@ export default function Show({ lead, statuses, managers }: PageProps<LeadShowPro
             eyebrow="Карточка заявки"
             actions={
                 <div className="flex gap-2">
-                    <button
+                    {!publicDemo && <button
                         type="button"
                         onClick={() => router.post(route('leads.convert', lead.id))}
                         disabled={Boolean(lead.converted_at)}
                         className="rounded-md bg-emerald-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:opacity-50 focus-ring"
                     >
                         Создать объект
-                    </button>
+                    </button>}
                     <Link
                         href={route('leads.index')}
                         className="rounded-md border border-stone-300 bg-white px-3 py-2 text-sm font-semibold text-stone-800 transition hover:border-stone-500 focus-ring"
@@ -84,7 +84,17 @@ export default function Show({ lead, statuses, managers }: PageProps<LeadShowPro
 
             <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
                 <Panel title="Данные заявки">
-                    <form onSubmit={update} className="grid gap-4 md:grid-cols-2">
+                    {publicDemo ? (
+                        <dl className="grid gap-3 text-sm">
+                            <div><dt>Телефон</dt><dd>{lead.phone}</dd></div>
+                            <div><dt>Email</dt><dd>{lead.email ?? 'Не указан'}</dd></div>
+                            <div><dt>Адрес</dt><dd>{lead.address}</dd></div>
+                            <div><dt>Тип ремонта</dt><dd>{lead.renovation_type}</dd></div>
+                            <div><dt>Площадь</dt><dd>{lead.area ?? 'Не указана'}</dd></div>
+                            <div><dt>Источник</dt><dd>{lead.source ?? 'Не указан'}</dd></div>
+                            <div><dt>Комментарий</dt><dd>{lead.comment ?? 'Нет комментария'}</dd></div>
+                        </dl>
+                    ) : <form onSubmit={update} className="grid gap-4 md:grid-cols-2">
                         {[
                             ['client_name', 'Имя клиента'],
                             ['phone', 'Телефон'],
@@ -156,7 +166,7 @@ export default function Show({ lead, statuses, managers }: PageProps<LeadShowPro
                                 Сохранить
                             </button>
                         </div>
-                    </form>
+                    </form>}
                 </Panel>
 
                 <div className="grid gap-6">
@@ -181,7 +191,7 @@ export default function Show({ lead, statuses, managers }: PageProps<LeadShowPro
                         </dl>
                     </Panel>
 
-                    <Panel title="Комментарий">
+                    {!publicDemo && <Panel title="Комментарий">
                         <form onSubmit={addComment} className="grid gap-3">
                             <textarea
                                 value={comment.data.body}
@@ -196,7 +206,7 @@ export default function Show({ lead, statuses, managers }: PageProps<LeadShowPro
                                 Добавить
                             </button>
                         </form>
-                    </Panel>
+                    </Panel>}
                 </div>
             </div>
 

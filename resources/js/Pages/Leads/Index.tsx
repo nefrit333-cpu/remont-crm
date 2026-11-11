@@ -57,6 +57,7 @@ export default function Index({
     filters,
     statuses,
     managers,
+    publicDemo,
 }: PageProps<LeadsIndexProps>) {
     const form = useForm<LeadForm>({
         client_name: '',
@@ -85,7 +86,7 @@ export default function Index({
         <AuthenticatedLayout title="Заявки" eyebrow="Воронка продаж">
             <Head title="Заявки" />
 
-            <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
+            <div className={`grid min-w-0 gap-6 ${publicDemo ? '' : 'xl:grid-cols-[minmax(0,1fr)_420px]'}`}>
                 <Panel
                     title="Список заявок"
                     action={
@@ -173,7 +174,7 @@ export default function Index({
                     </div>
                 </Panel>
 
-                <Panel title="Новая заявка">
+                {!publicDemo && <Panel title="Новая заявка">
                     <form onSubmit={submit} className="grid gap-4">
                         {leadFields.map(({ field, label, type = 'text', required }) => {
                             const inputId = `lead-${field}`;
@@ -266,7 +267,7 @@ export default function Index({
                             Создать заявку
                         </button>
                     </form>
-                </Panel>
+                </Panel>}
             </div>
         </AuthenticatedLayout>
     );

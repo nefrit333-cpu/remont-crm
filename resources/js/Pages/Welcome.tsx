@@ -9,7 +9,7 @@ const accounts = [
     ['Клиент', 'client@remont-crm.test', 'Свой объект, платежи, акты, файлы и комментарии'],
 ] as const;
 
-export default function Welcome({ auth }: PageProps) {
+export default function Welcome({ auth, publicDemo }: PageProps) {
     const [processing, setProcessing] = useState(false);
 
     const submit = (email: string) => {
@@ -41,7 +41,7 @@ export default function Welcome({ auth }: PageProps) {
                             >
                                 В CRM
                             </Link>
-                        ) : (
+                        ) : !publicDemo && (
                             <Link
                                 href={route('login')}
                                 className="rounded-md border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 transition hover:border-stone-500 focus-ring"
@@ -67,7 +67,7 @@ export default function Welcome({ auth }: PageProps) {
                                 </p>
                             </div>
 
-                            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                            {publicDemo && !auth.user && <div className="mt-8 grid gap-3 sm:grid-cols-2">
                                 {accounts.map(([label, email, description]) => (
                                     <button
                                         key={email}
@@ -84,7 +84,7 @@ export default function Welcome({ auth }: PageProps) {
                                         </span>
                                     </button>
                                 ))}
-                            </div>
+                            </div>}
                         </div>
 
                         <div className="rounded-lg border border-stone-300/80 bg-[#1b1814] p-5 text-stone-100 shadow-[0_30px_80px_rgba(45,38,28,0.24)]">
